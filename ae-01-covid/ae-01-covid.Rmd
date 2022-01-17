@@ -1,5 +1,5 @@
 ---
-title: "Cumulative cases from COVID-19"
+title: "COVID-19 cases"
 date: "`r Sys.Date()`"
 output: 
   html_document: 
