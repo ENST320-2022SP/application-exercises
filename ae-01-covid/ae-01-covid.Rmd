@@ -13,7 +13,7 @@ Countries around the world are responding to an outbreak of respiratory illness 
 
 The data come from the **coronavirus** package, which pulls data from the Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) Coronavirus repository. The coronavirus package provides a tidy format dataset of the 2019 Novel Coronavirus COVID-19 (2019-nCoV) epidemic. The package is available on GitHub [here](https://github.com/RamiKrispin/coronavirus) and is updated daily.
 
-For our analysis, in addition to the coronavirus package, we will use the following packages for data wrangling and visualisation.
+For our analysis, in addition to the coronavirus package, we will use the following packages for data wrangling and visualization.
 
 - **tidyverse** for data wrangling and visualization
 - **lubridate** package for handling dates
@@ -26,17 +26,17 @@ We will make use of the **DT** package for interactive display of tabular output
 ```{r load-packages, warning=FALSE, message=FALSE}
 library(coronavirus) # devtools::install_github("RamiKrispin/coronavirus")
 update_dataset()
-library(tidyverse)
 library(lubridate)
 library(glue)
 library(scales)
 library(ggrepel)
 library(DT)
+library(tidyverse)
 ```
 
 ## Data prep
 
-The data frame called `coronavirus` in the coronavirus package provides a daily summary of the Coronavirus (COVID-19) cases by country. Each row in the data frame represents a country (or, where relevant, state/province). A full list of the countries in the data frame is provided in the [Appendix]. Note that the data provided in this package provides daily number of deaths, confirmed cases, and recovered cases. For this report, we will focus on the cases. 
+The data frame called `coronavirus` in the coronavirus package provides a daily summary of the coronavirus (COVID-19) cases by country. Each row in the data frame represents a country (or, where relevant, state/province). A full list of the countries in the data frame is provided in the [Appendix]. Note that the data provided in this package provides daily number of deaths, confirmed cases, and recovered cases. For this report, we will focus on the cases. 
 
 We will start by making our selection for the countries we want to explore.
 
@@ -50,7 +50,7 @@ countries <- c(
 )
 ```
 
-In the following code chunk we filter the data frame for cases in the countries we specified above and calculate cumulative number of cases We will only visualize data since 10th confirmed case 
+In the following code chunk we filter the data frame for cases in the countries we specified above and calculate cumulative number of cases We will only visualize data since 10th confirmed case. 
 
 ```{r prep-country-data}
 country_data <- coronavirus %>%
@@ -81,13 +81,13 @@ country_data <- coronavirus %>%
     end_date     = if_else(date == max(date), TRUE, FALSE),
     end_label    = if_else(end_date, country, NULL)
   ) %>%
-  # ungroup
   ungroup()
 ```
 
-We also need to take a note of the "as of date" for the data so that we can properly label our visualization.
+We also need to take a note of the "as of date" for the data so that we can properly label our visualization with the date of latest data update.
 
 ```{r record-as-of-date}
+# get the maximum (greatest) date in the dataset
 as_of_date <- country_data %>% 
   summarise(max(date)) %>% 
   pull()
@@ -95,11 +95,11 @@ as_of_date <- country_data %>%
 as_of_date_formatted <- glue("{wday(as_of_date, label = TRUE)}, {month(as_of_date, label = TRUE)} {day(as_of_date)}, {year(as_of_date)}")
 ```
 
-These data are as of `r as_of_date_formatted`.
+These data are updated as of `r as_of_date_formatted`.
 
 ## Visualisation
 
-The following visualisation shows the number of cumulative cases vs. days elapsed since the 10th confirmed case in each country. The time span plotted for each country varies since some countries started seeing (and reporting) cases from COVID-19 much later than others.
+The following visualization shows the number of cumulative cases vs. days elapsed since the 10th confirmed case in each country. The time span plotted for each country varies since some countries started seeing (and reporting) cases from COVID-19 much later than others. Plotting cases since the 10th case allows us to visualize the spread of the virus in each country with respect to its date of introduction to the country.
 
 ```{r visualise, warning=FALSE}
 ggplot(data = country_data,
@@ -131,12 +131,24 @@ ggplot(data = country_data,
   )
 ```
 
-### A step further
+### You try
+
+- Examine cases in different countries. You'll need to first select your countries (a full list of countries is available in the appendix table), then re-run each code chunk after you select your countries to filter the original dataset to include just those countries, calculate cumulative cases, and then plot.
+
+- Examine cumulative deaths or recoveries instead of confirmed cases. This can be done by modifying the `type` variable that you filter for. Use `type == "death"` for deaths or `type == "recovery"` for recoveries. FYI, you can look at the first few rows of your data to see what variables it contains by just typing the name of the data object into the console. You can see the unique values of a variable using the `distinct` function. Below, we find out the distinct types of cases. 
+
+```{r}
+coronavirus %>%
+  select(type) %>%
+  distinct()
+```
+
+## A step further
 
 Often, normalizing total cases by population is a more informative metric of how prevalent covid is in a particular population. Here, we look at new daily cases per 100,000 people to be able to better compare across countries.
 ```{r}
 norm_data <- coronavirus %>%
-  # filter for cases in countries of interest
+  # filter for confirmed cases in countries of interest
   filter(
     type == "confirmed",
     country %in% countries
@@ -159,6 +171,7 @@ norm_data <- coronavirus %>%
 
 Plot daily new cases per 100,000 people. Sometimes it's easier to see the data if you plot each country in a separate panel. We use the function facet_wrap here to do that.
 ```{r}
+#note that data = norm_data now, rather than country_data
 ggplot(data = norm_data,
        mapping = aes(x = date, 
                      y = cases_per_100k, 
@@ -178,12 +191,16 @@ ggplot(data = norm_data,
   # customize labels
   labs(
     x = "",
-    y = "Daily cases per 100,000 people",
-    title = "Daily COVID-19 cases per 100,000 people, selected countries",
+    y = "Daily cases per 100,000",
+    title = "Daily COVID-19 cases per 100,000, selected countries",
     subtitle = glue("Data as of", as_of_date_formatted, .sep = " "),
     caption = "Source: github.com/RamiKrispin/coronavirus"
   )
 ```
+
+### You try
+
+- Look at the `coronavirus` package [documentation page](https://github.com/RamiKrispin/coronavirus). What datasets does it contain? What are the variables in each dataset? What other questions could you explore with these data?
 
 ## Appendix
 
