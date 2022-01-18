@@ -7,7 +7,7 @@ output:
     toc_float: yes
 ---
 
-## Introduction 
+## Introduction
 
 Countries around the world are responding to an outbreak of respiratory illness caused by a novel coronavirus, COVID-19. The outbreak first started in Wuhan, China, but cases have been identified in a growing number of other locations internationally, including the United States. In this report we explore the trajectory of cumulative cases in a number of countries.
 
