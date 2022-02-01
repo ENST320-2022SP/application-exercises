@@ -1,0 +1,32 @@
+---
+title: "dplyr code-along"
+author: "Cassie Gurbisz"
+date: "1/30/2022"
+output: html_document
+---
+
+Some dplyr functions:
+- select: pick columns by name
+- arrange: reorder rows
+- slice: pick rows using index(es)
+- filter: pick rows matching criteria
+- distinct: filter for unique rows
+- mutate: add new variables
+- summarise: reduce variables to values
+- group_by: for grouped operations
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+Let's code the following together to give you some practice using pipes and the dplyr functions:
+
+- Select species, bill_length_mm, and year
+- Select species, bill_length_mm, and year and then arrange by bill_length_mm
+- Filter the penguins dataset to only keep observations from 2007
+- Filter the penguins dataset to only keep observations after 2007
+- Filter the penguins dataset to only keep observations from Dream island
+- Use the distinct function to find out what the unique species are
+- Use the slice_min function to look at the row with the smallest bill_length_mm 
+- Use the slice_max function to look at the row with the largest body_mass_g
