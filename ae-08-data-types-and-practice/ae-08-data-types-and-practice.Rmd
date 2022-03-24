@@ -1,0 +1,34 @@
+---
+title: "Data types and other practice"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    toc: yes
+    toc_float: yes
+---
+
+Load packages
+```{r load-packages}
+library(tidyverse)
+library(lubridate)
+```
+
+1. Using the air dataset, create a new variable called `date`. Assume the year is 2022. Make sure date is in a date format. Create a visualization showing Ozone over time.   
+```{r air}
+air <- as_tibble(airquality)
+air %>%
+  mutate(date = make_date(2022, Month, Day)) %>%
+  ggplot(aes(x = date, y = Temp)) + geom_line()
+```
+
+2. Using the storms dataset, ask a question that can only be answered after doing some data wrangling (filtering, arranging, summarizing, selecting, mutating, etc.). Use the data to answer your question and create a visualization that supports your conclusion. Refer to the `storms` help file for more information about the dataset. 
+```{r storms}
+?storms
+
+```
+
+3. Using the midwest dataset, ask a question that can only be answered after doing some tidying (pivoting, spreading, uniting, etc.). Use the data to answer your question and create a visualization that supports your conclusion. Refer to the `midwest` help file for more information about the dataset. 
+```{r midwest}
+?midwest
+
+```
